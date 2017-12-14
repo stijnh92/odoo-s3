@@ -47,7 +47,7 @@ class S3Attachment(osv.osv):
             remain = remain.lstrip(access_key_id).lstrip(':')
             secret_key = remain.split('@')[0]
             bucket_name = remain.split('@')[1]
-            host = self.env['ir.config_parameter'].get_param('s3_host')
+            host = openerp_config.get('s3_host', None)
             if not access_key_id or not secret_key:
                 raise Exception(
                     "No AWS access and secret keys were provided."
