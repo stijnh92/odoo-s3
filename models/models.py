@@ -62,7 +62,7 @@ class S3Attachment(osv.osv):
 
         return s3_bucket
 
-    def _file_read(self, cr, uid, fname, bin_size=False):
+    def _file_read(self, fname, bin_size=False):
         storage = self._storage(cr, uid)
         if storage[:5] == 's3://':
             s3_bucket = self._connect_to_S3_bucket(storage)
@@ -72,18 +72,18 @@ class S3Attachment(osv.osv):
                 # still be stored in the file system even though
                 # ir_attachment.location is configured to use S3
                 try:
-                    read = super(S3Attachment, self)._file_read(cr, uid, fname, bin_size=False)
+                    read = super(S3Attachment, self)._file_read(fname, bin_size=False)
                 except Exception:
                     # Could not find the file in the file system either.
                     return False
             else:
                 read = base64.b64encode(s3_key.get_contents_as_string())
         else:
-            read = super(S3Attachment, self)._file_read(cr, uid, fname, bin_size=False)
+            read = super(S3Attachment, self)._file_read(fname, bin_size=False)
         return read
 
-    def _file_write(self, cr, uid, value, checksum):
-        storage = self._storage(cr, uid)
+    def _file_write(self, value, checksum):
+        storage = self._storage()
         if storage[:5] == 's3://':
             s3_bucket = self._connect_to_S3_bucket(storage)
             bin_value = value.decode('base64')
@@ -95,7 +95,6 @@ class S3Attachment(osv.osv):
 
             s3_key.set_contents_from_string(bin_value)
         else:
-            fname = super(S3Attachment, self)._file_write(
-                cr, uid, value, checksum)
+            fname = super(S3Attachment, self)._file_write(value, checksum)
 
         return fname
