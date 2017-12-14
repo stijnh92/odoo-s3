@@ -63,7 +63,7 @@ class S3Attachment(osv.osv):
         return s3_bucket
 
     def _file_read(self, fname, bin_size=False):
-        storage = self._storage(cr, uid)
+        storage = self._storage()
         if storage[:5] == 's3://':
             s3_bucket = self._connect_to_S3_bucket(storage)
             s3_key = s3_bucket.get_key(fname)
