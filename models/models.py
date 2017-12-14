@@ -23,6 +23,7 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from openerp.osv import osv
+from openerp.tools import config as openerp_config
 
 import boto
 import codecs
