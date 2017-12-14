@@ -25,6 +25,7 @@
 from openerp.osv import osv
 
 import boto
+import codecs
 import base64
 import hashlib
 
@@ -87,7 +88,7 @@ class S3Attachment(osv.osv):
         storage = self._storage()
         if storage[:5] == 's3://':
             s3_bucket = self._connect_to_S3_bucket(storage)
-            bin_value = value.decode('base64')
+            bin_value = codecs.decode(value, "base64_codec")
             fname = hashlib.sha1(bin_value).hexdigest()
 
             s3_key = s3_bucket.get_key(fname)
