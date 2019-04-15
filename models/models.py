@@ -48,7 +48,6 @@ class S3Attachment(osv.osv):
             remain = remain.lstrip(access_key_id).lstrip(':')
             secret_key = remain.split('@')[0]
             bucket_name = remain.split('@')[1]
-            host = openerp_config.get('s3_host', None)
             if not access_key_id or not secret_key:
                 raise Exception(
                     "No AWS access and secret keys were provided."
@@ -57,7 +56,7 @@ class S3Attachment(osv.osv):
         except Exception:
             raise Exception("Unable to parse the S3 bucket url.")
 
-        s3_conn = boto.connect_s3(access_key_id, secret_key, host=host)
+        s3_conn = boto.connect_s3(access_key_id, secret_key)
         s3_bucket = s3_conn.lookup(bucket_name)
         if not s3_bucket:
             # If the bucket does not exist, create a new one
