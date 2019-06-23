@@ -29,5 +29,9 @@
         'python': ['boto'],
     },
 
+    'data': [
+        'data/init_filestore.xml',
+    ],
+
     'installable': True
 }
