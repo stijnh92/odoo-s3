@@ -1,19 +1,52 @@
 # Odoo-S3
 
+AWS S3 bucket as the primary file storage in an Odoo instance.
+
 ## Dependencies
-`Odoo-S3` uses [`boto`](https://github.com/boto/boto) to talk to Amazon. You will need to install it on the host running Odoo.
+
+`Odoo-S3` uses [`boto`](https://github.com/boto/boto) to talk to AWS. In addition, `Odoo-S3` also uses [`boto3`](https://github.com/boto/boto3) in order to copy the existing filesystem filestore to S3. Hence, you will need to install both of them on the host running Odoo. `Odoo-S3` will be migrated entirely on to `boto3` in the future.
 
 ## Compatibility
-This module was written for **Odoo v9.0** and is only tested with this particular version. There is no warranty the addon
-will work for other releases.
+
+This module was written for **Odoo v12.0** and is only tested with this particular version. However, It should work for **Odoo v11.0** as well. Older versions of `Odoo` might require some modifications.
 
 ## Configuration
-In order to use `Odoo-S3` you will need to switch to "Developer mode" and define a new system parameter as follow
+
+In order to use `Odoo-S3` you will need to switch to "Developer mode" and define a new system parameter as follows
 
 ```
 ir_attachment.location  --->  s3://<Your-AWS-Access-Key-ID>:<Your-AWS-Secret-Key>@<Your-S3-Bucket-name>
 
 ```
 
+## Migration of existing filestore
+
+If the above configuration is present when the addon is installed, the existing filesystem based filestore will be copied to the above S3 bucket at the end of the installation. Otherwise, this needs to by done manually from the odoo shel (see below).
+
+## Maintenance
+
+Following commands are available from the odoo shell.
+
+1. Copy existing filesystem based filestore to S3.
+
+```
+$> env['ir.attachment'].search([]).copy_filestore_to_s3()
+
+```
+
+2. To check the status of the S3 filestore.
+
+```
+$> res_list, totals = env['ir.attachment'].search([]).check_s3_filestore()
+
+```
+
 ## How to contribute
+
 Pull requests are welcome. The code is fairly short and easy to understand. All the magic happens in `models.py` where the regular model `ir_attachment` is extended.
+
+## Thanks
+
+This module is based on:
+* [Original odoo-s3](https://github.com/tvanesse/odoo-s3)
+* [odoo_s3](https://github.com/diogocduarte/odoo_s3)

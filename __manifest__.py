@@ -26,8 +26,12 @@
     'depends': ['base'],
 
     'external_dependencies': {
-        'python': ['boto'],
+        'python': ['boto', 'boto3'],
     },
+
+    'data': [
+        'data/init_filestore.xml',
+    ],
 
     'installable': True
 }
