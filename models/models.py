@@ -23,6 +23,7 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from odoo import api, models
+from odoo.tools import config
 
 import boto
 import boto3
@@ -73,7 +74,8 @@ class S3Attachment(models.Model):
         except Exception:
             raise Exception("Unable to parse the S3 bucket url.")
 
-        s3_conn = boto.connect_s3(access_key_id, secret_key)
+        host = config.get('s3_host', 's3.amazonaws.com')
+        s3_conn = boto.connect_s3(access_key_id, secret_key, host=host)
         s3_bucket = s3_conn.lookup(bucket_name)
         if not s3_bucket:
             # If the bucket does not exist, create a new one
